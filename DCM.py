@@ -2,6 +2,15 @@ from tkinter import *
 #from PIL import ImageTk, Image
 import random
 import os
+import serial
+import struct
+import array
+import sys
+import time
+
+x = 0.0
+test123=sys.getsizeof(x)
+
 
 ###Data for each of the pacing modes###
 #NOTE: These must be stored globally so that they may be accessed between windows
@@ -13,6 +22,17 @@ AOOData=[0,0,0,0,-1,-1,-1,0]
 VOOData=[0,0,-1,-1,0,0,0,-1]
 AAIData=[0,0,0,0,-1,-1,-1,0]
 VVIData=[0,0,-1,-1,0,0,0,-1]
+#s1=serial.Serial("/dev/tty.usbmodem1422",115200)
+#from sys import byteorder
+#print(byteorder)
+
+#while(True):
+#    s = s1.read(8)
+#    value = struct.unpack_from('d', s,offset=0)
+
+#    print(s)
+#    time.sleep(0.1)
+
 
 global root
 root=Tk()
@@ -22,6 +42,7 @@ loginInfoFile='pacemakerLogins.txt'#Create a variable to store the pacemakerLogi
 
 def welcome():
  root.title('Pacemaker DCM')#Window name
+ #root.geometry("1920x1080")
  welcomeLabel=Label(root,text="Welcome to the pacemaker DCM! Please enter your login info!")#Welcome message
  welcomeLabel.grid(sticky=N)#Assigns label to border
 #End of welcome func
@@ -291,6 +312,7 @@ def login():
      if (userNameInSheetEntriesWithMatchingPassword()):
          #Execute function for actual UI
          userInterface()
+         root.destroy()
      else:
          badLogin = Tk()
          badLabel = Label(badLogin, text='Bad username and password.')
@@ -319,6 +341,7 @@ def register():
      numLines=len(readFile.readlines())
      if (numLines>=20):
          failWindow=Tk()
+         failWindow.geometry("400x50")
          failWindow.title('Failed to register')
          failMessage=Label(failWindow, text='Could not register a new user. Too many users already exist.')
          failMessage.grid(row=1, sticky=W)
@@ -406,4 +429,3 @@ def main():
 
 if __name__=="__main__":
    main()
-
