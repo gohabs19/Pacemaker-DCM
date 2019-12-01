@@ -4,38 +4,61 @@
 from tkinter import *
 import windows#Import the windows.py file
 
-class loginAndRegistrationWindowsFunctionality:
-    def usernameAndPasswordEntry(self, root):
-        usernameLabel = Label(root, text='Username: ')  # Username text
-        passwordLabel = Label(root, text='Password: ')  # Password text
-        usernameLabel.grid(row=1, column=1, sticky=W)  # Username text organization
-        passwordLabel.grid(row=2, column=1, sticky=W)  # Password text organization
+class loginAndRegistrationWindowsFunctionality:#A parent class to hold the functionality that is necessary to both the
+    #login and registration functionalities, along with the login and registration classes themselves.
 
+    usernameEntry=Entry()
+    passwordEntry=Entry()
+
+    def setUsernameEntry(usernameEntry):#To set the current values for username and password. These are used when the
+        #user moves from window to window. For example, if the user chooses to move from login to register, the username
+        #and password entry fields will become those that are on the registration window.
+        loginAndRegistrationWindowsFunctionality.usernameEntry=usernameEntry
+    def setPasswordEntry(passwordEntry):
+        loginAndRegistrationWindowsFunctionality.passwordEntry=passwordEntry
+    def getCurrentUsername(self):#To get the current value of username and password. These are shared by all login and
+        #registration methods, as the user can only have one username and password typed at a time.
+        return loginAndRegistrationWindowsFunctionality.usernameEntry.get()
+    def getCurrentPassword(self):
+        return loginAndRegistrationWindowsFunctionality.passwordEntry.get()
+
+    def usernameEntry(self, root):#To set up the infrastructure for a username entry.
+        usernameLabel = Label(root, text='Username: ')  # Username text
+        usernameLabel.grid(row=1, column=1, sticky=W)  # Username text organization
         usernameEntry = Entry(root)  # Username entry text
-        passwordEntry = Entry(root, show='*')  # Password entry text
         usernameEntry.grid(row=1, column=2, sticky=E)  # Username entry text organization
+        loginAndRegistrationWindowsFunctionality.setUsernameEntry(usernameEntry)
+
+    def passwordEntry(self, root):
+        passwordLabel = Label(root, text='Password: ')  # Password text
+        passwordLabel.grid(row=2, column=1, sticky=W)  # Password text organization
+        passwordEntry = Entry(root, show='*')  # Password entry text
         passwordEntry.grid(row=2, column=2, sticky=E)  # Password entry text organization
+        loginAndRegistrationWindowsFunctionality.setPasswordEntry(passwordEntry)
 
     class loginWindowsFunctionality:
         def fillLoginWindow(self, lWindow):#Fills the login window with necessary pieces (e.g. text, buttons, etc.)
             print('Filling login window')#For debugging
-            loginAndRegistrationWindowsFunctionality().usernameAndPasswordEntry(lWindow)#Insert text and textboxes for
-            #the user to insert a username and password
-            loginButton=Button(lWindow, text='Login', fg='Black', command=lambda: loginAndRegistrationWindowsFunctionality.loginWindowsFunctionality.login(lWindow))
+            loginAndRegistrationWindowsFunctionality().usernameEntry(lWindow)#Insert text and textboxes for
+            #the user to insert a username and password.
+            loginAndRegistrationWindowsFunctionality().passwordEntry(lWindow)
+            loginButton=Button(lWindow, text='Login', fg='Black', command=lambda: loginAndRegistrationWindowsFunctionality.loginWindowsFunctionality.login(self,lWindow))
             loginButton.grid(row=3, column=1, columnspan=2, sticky=S)
             registrationLabel=Label(lWindow, text="Don't have a login? Register here-->")
             registrationLabel.grid(row=4, column=1, sticky=W)
             registrationButton=Button(lWindow, text='Register', fg='Black', command=lambda: windows.windowsRegister.registerWindow(self, lWindow))
-
-
-            ###NEED TO INSERT COMMAND TO OPEN REGISTRATION WINDOW
-
-
             registrationButton.grid(row=4, column=2, sticky=E)
-        def login(self):
+        def login(self, lWindow):
             print('Login attempt made')
+            print('Current username: '+loginAndRegistrationWindowsFunctionality.getCurrentUsername(self)+' Current password: '+loginAndRegistrationWindowsFunctionality.getCurrentPassword(self))
+
 
     class registrationWindowsFunctionality:
         def fillRegistrationWindow(self, rWindow):
             print('Filling registration window')
-            loginAndRegistrationWindowsFunctionality().usernameAndPasswordEntry(rWindow)
+            usernameEntry=loginAndRegistrationWindowsFunctionality().usernameEntry(rWindow)
+            passwordEntry=loginAndRegistrationWindowsFunctionality().passwordEntry(rWindow)
+            registrationButton = Button(rWindow, text='Register', fg='Black', command=lambda: loginAndRegistrationWindowsFunctionality.registrationWindowsFunctionality.register(self, rWindow))
+            registrationButton.grid(row=3, column=1, columnspan=2, sticky=S)
+        def register(self, rWindow):
+            print('Registration attempt made')
