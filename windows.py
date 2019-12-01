@@ -31,5 +31,5 @@ class windowsRegister:
         rWindow=Tk()
         rWindow.title('Register')
         registrationWindowsFunctionality = windowsFunctionality.loginAndRegistrationWindowsFunctionality().registrationWindowsFunctionality()
-        registrationWindowsFunctionality.fillRegistrationWindow(rWindow)  # Call the fillLoginWindow method from the loginWindowsFunctionality
+        registrationWindowsFunctionality.fillRegistrationWindow(rWindow)  # Call the fillRegistrationWindow method from the registrationWindowsFunctionality
         rWindow.mainloop()
