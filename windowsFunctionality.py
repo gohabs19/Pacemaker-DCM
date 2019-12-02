@@ -3,13 +3,15 @@
 
 from tkinter import *
 import windows#Import the windows.py file
+import threading
+import time
 
 class loginAndRegistrationWindowsFunctionality:#A parent class to hold the functionality that is necessary to both the
     #login and registration functionalities, along with the login and registration classes themselves.
 
     #Class variables
-    usernameEntry=Entry()
-    passwordEntry=Entry()
+    username=''#To store the username and password currently on screen. Updated when the user attempts to login or register.
+    password=''
     # Attain data from the login info sheet. This data is relevant to all login and registration-related methods.
     loginInfoFile = 'pacemakerLogins.txt'
     with open(loginInfoFile) as f:  # Open the loginInfoFile to read from
@@ -29,38 +31,35 @@ class loginAndRegistrationWindowsFunctionality:#A parent class to hold the funct
                 fileData[(index * 2) + 1].rstrip())  # Append the usernames from the sheet to passwordsFromSheet list
 
     #Class methods for all login and registry-related functionalities
-    def setUsernameEntry(usernameEntry):#To set the current values for username and password. These are used when the
-        #user moves from window to window. For example, if the user chooses to move from login to register, the username
-        #and password entry fields will become those that are on the registration window.
-        loginAndRegistrationWindowsFunctionality.usernameEntry=usernameEntry
-    def setPasswordEntry(passwordEntry):
-        loginAndRegistrationWindowsFunctionality.passwordEntry=passwordEntry
-    def getCurrentUsername(self):#To get the current value of username and password. These are shared by all login and
-        #registration methods, as the user can only have one username and password typed at a time.
-        return loginAndRegistrationWindowsFunctionality.usernameEntry.get()
-    def getCurrentPassword(self):
-        return loginAndRegistrationWindowsFunctionality.passwordEntry.get()
-    def usernameEntry(self, root):#To set up the infrastructure for a username entry.
+    def setCurrentUsername(self,username):#To set the username for the whole class to the one that is currently on-screen
+        #incase it needs to be used again.
+        loginAndRegistrationWindowsFunctionality.username=username
+    def setCurrentPassword(self,password):
+        loginAndRegistrationWindowsFunctionality.password=password
+    def updateUsernameAndPassword(self,usernameEntry,passwordEntry):
+        n = 1
+        while (n > 0):
+            print('Updating username & password')
+            loginAndRegistrationWindowsFunctionality.username = usernameEntry.get()
+            loginAndRegistrationWindowsFunctionality.password = passwordEntry.get()
+            time.sleep(0.01)#0.01 second delay between username and password updates
+    def usernameAndPasswordEntries(self,root):
         usernameLabel = Label(root, text='Username: ')  # Username text
         usernameLabel.grid(row=1, column=1, sticky=W)  # Username text organization
         usernameEntry = Entry(root)  # Username entry text
         usernameEntry.grid(row=1, column=2, sticky=E)  # Username entry text organization
-        loginAndRegistrationWindowsFunctionality.setUsernameEntry(usernameEntry)#Set the class variable usernameEntry
-        #equal to the usernameEntry variable that we created locally.
-    def passwordEntry(self, root):
         passwordLabel = Label(root, text='Password: ')  # Password text
         passwordLabel.grid(row=2, column=1, sticky=W)  # Password text organization
         passwordEntry = Entry(root, show='*')  # Password entry text
         passwordEntry.grid(row=2, column=2, sticky=E)  # Password entry text organization
-        loginAndRegistrationWindowsFunctionality.setPasswordEntry(passwordEntry)#Set the class variable passwordEntry
-        #equal to the passwordEntry variable that we created locally.
+        thread = threading.Thread(target=loginAndRegistrationWindowsFunctionality.updateUsernameAndPassword,args=(self, usernameEntry, passwordEntry))
+        thread.daemon = True  # Make thread a daemon (runs in background)
+        thread.start()  # Start thread
 
     class loginWindowsFunctionality:
         def fillLoginWindow(self, lWindow):#Fills the login window with necessary pieces (e.g. text, buttons, etc.)
             print('Filling login window')#For debugging
-            loginAndRegistrationWindowsFunctionality().usernameEntry(lWindow)#Insert text and textboxes for
-            #the user to insert a username and password.
-            loginAndRegistrationWindowsFunctionality().passwordEntry(lWindow)
+            loginAndRegistrationWindowsFunctionality.usernameAndPasswordEntries(self,lWindow)
             loginButton=Button(lWindow, text='Login', fg='Black', command=lambda: loginAndRegistrationWindowsFunctionality.loginWindowsFunctionality.login(self,lWindow))
             loginButton.grid(row=3, column=1, columnspan=2, sticky=S)
             registrationLabel=Label(lWindow, text="Don't have a login? Register here-->")
@@ -77,19 +76,27 @@ class loginAndRegistrationWindowsFunctionality:#A parent class to hold the funct
                         return TRUE
             return FALSE  # If the end of this function is reached, it means that there is no user with the login credentials
             # entered by the user (meaning that we can go ahead and return a false value)
+
         def login(self, lWindow):#Method used to check if we will log the user in given the information that they have entered.
             print('Login attempt made')
-            print('Current username: '+loginAndRegistrationWindowsFunctionality.getCurrentUsername(self)+' Current password: '+loginAndRegistrationWindowsFunctionality.getCurrentPassword(self))
-            ##If value of valid login attempt is 1, login successful->continue to DCM.
-            print('Valid login attempt?:'+str(loginAndRegistrationWindowsFunctionality.loginWindowsFunctionality.matchingUsernameAndPassword(self,str(loginAndRegistrationWindowsFunctionality.getCurrentUsername(self)),str(loginAndRegistrationWindowsFunctionality.getCurrentPassword(self)))))
+            print('Username: '+loginAndRegistrationWindowsFunctionality.username+'Password: '+loginAndRegistrationWindowsFunctionality.password)
 
-            #print('Type: '+str(type(loginAndRegistrationWindowsFunctionality.getCurrentUsername(self))))
 
     class registrationWindowsFunctionality:
         def fillRegistrationWindow(self, rWindow):
             print('Filling registration window')
-            loginAndRegistrationWindowsFunctionality().usernameEntry(rWindow)
-            loginAndRegistrationWindowsFunctionality().passwordEntry(rWindow)
+            usernameLabel = Label(root, text='Username: ')  # Username text
+            usernameLabel.grid(row=1, column=1, sticky=W)  # Username text organization
+            usernameEntry = Entry(root)  # Username entry text
+            usernameEntry.grid(row=1, column=2, sticky=E)  # Username entry text organization
+            passwordLabel = Label(root, text='Password: ')  # Password text
+            passwordLabel.grid(row=2, column=1, sticky=W)  # Password text organization
+            passwordEntry = Entry(root, show='*')  # Password entry text
+            passwordEntry.grid(row=2, column=2, sticky=E)  # Password entry text organization
+            def getCurrentUsername(self):
+                return usernameEntry.get()
+            def getCurrentPassword(self):
+                return passwordEntry.get()
             registrationButton = Button(rWindow, text='Register', fg='Black', command=lambda: loginAndRegistrationWindowsFunctionality.registrationWindowsFunctionality.register(self, rWindow))
             registrationButton.grid(row=3, column=1, columnspan=2, sticky=S)
         def register(self, rWindow):
