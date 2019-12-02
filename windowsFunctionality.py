@@ -4,28 +4,29 @@
 from tkinter import *
 import windows#Import the windows.py file
 
-#Attain data from the login info sheet
-loginInfoFile='pacemakerLogins.txt'
-with open(loginInfoFile) as f:  # Open the loginInfoFile to read from
-    fileData = f.readlines()  # Read datasheet
-    numLines = len(fileData)  # Calculate the number of lines in the sheet
-    usernamesFromSheet = []  # Starting list of all usernames in the sheet
-    passwordsFromSheet = []  # Starting list of all passwords in the sheet
-    for index in range((int)(numLines / 2)):  # Index ranging up to half of the number of lines (as we will be
-        # observing both the usernames and passwords and considering them to be one pairing, even though they
-        # take up 2 lines)
-        usernamesFromSheet.append(fileData[index * 2].rstrip())  # Append the usernames from the sheet to usernamesFromSheet list.
-        # NOTE: This is helpful because now we have two seperate lists containing the usernames and passwords, respectively.
-        # This means that we can now compare usernames and passwords at the same index (meaning that they are pertaining
-        # to the same user)
-        passwordsFromSheet.append(fileData[(index * 2) + 1].rstrip())  # Append the usernames from the sheet to passwordsFromSheet list
-
 class loginAndRegistrationWindowsFunctionality:#A parent class to hold the functionality that is necessary to both the
     #login and registration functionalities, along with the login and registration classes themselves.
 
     #Class variables
     usernameEntry=Entry()
     passwordEntry=Entry()
+    # Attain data from the login info sheet. This data is relevant to all login and registration-related methods.
+    loginInfoFile = 'pacemakerLogins.txt'
+    with open(loginInfoFile) as f:  # Open the loginInfoFile to read from
+        fileData = f.readlines()  # Read datasheet
+        numLines = len(fileData)  # Calculate the number of lines in the sheet
+        usernamesFromSheet = []  # Starting list of all usernames in the sheet
+        passwordsFromSheet = []  # Starting list of all passwords in the sheet
+        for index in range((int)(numLines / 2)):  # Index ranging up to half of the number of lines (as we will be
+            # observing both the usernames and passwords and considering them to be one pairing, even though they
+            # take up 2 lines)
+            usernamesFromSheet.append(
+                fileData[index * 2].rstrip())  # Append the usernames from the sheet to usernamesFromSheet list.
+            # NOTE: This is helpful because now we have two seperate lists containing the usernames and passwords, respectively.
+            # This means that we can now compare usernames and passwords at the same index (meaning that they are pertaining
+            # to the same user)
+            passwordsFromSheet.append(
+                fileData[(index * 2) + 1].rstrip())  # Append the usernames from the sheet to passwordsFromSheet list
 
     #Class methods for all login and registry-related functionalities
     def setUsernameEntry(usernameEntry):#To set the current values for username and password. These are used when the
@@ -68,25 +69,27 @@ class loginAndRegistrationWindowsFunctionality:#A parent class to hold the funct
             registrationButton.grid(row=4, column=2, sticky=E)
         def matchingUsernameAndPassword(self, currentUsername,currentPassword):  # To check if there exists a user who has the combination of username
             # and password that the user has entered.
-            for j in range(len(usernamesFromSheet)):  # Check all usernames for login equality
-                if (str(usernamesFromSheet[j]) == str(currentUsername)):  # If username at the current index matches the username
+            for j in range(len(loginAndRegistrationWindowsFunctionality.usernamesFromSheet)):  # Check all usernames for login equality
+                if (str(loginAndRegistrationWindowsFunctionality.usernamesFromSheet[j]) == str(currentUsername)):  # If username at the current index matches the username
                     # entered by the user
-                    if (str(passwordsFromSheet[j]) == str(currentPassword)):  # Only accepts login if username and password come
+                    if (str(loginAndRegistrationWindowsFunctionality.passwordsFromSheet[j]) == str(currentPassword)):  # Only accepts login if username and password come
                         # from same index. This stops someone else's password from being used with a given username
                         return TRUE
             return FALSE  # If the end of this function is reached, it means that there is no user with the login credentials
             # entered by the user (meaning that we can go ahead and return a false value)
-        def login(self, lWindow):
+        def login(self, lWindow):#Method used to check if we will log the user in given the information that they have entered.
             print('Login attempt made')
             print('Current username: '+loginAndRegistrationWindowsFunctionality.getCurrentUsername(self)+' Current password: '+loginAndRegistrationWindowsFunctionality.getCurrentPassword(self))
+            ##If value of valid login attempt is 1, login successful->continue to DCM.
             print('Valid login attempt?:'+str(loginAndRegistrationWindowsFunctionality.loginWindowsFunctionality.matchingUsernameAndPassword(self,str(loginAndRegistrationWindowsFunctionality.getCurrentUsername(self)),str(loginAndRegistrationWindowsFunctionality.getCurrentPassword(self)))))
+
             #print('Type: '+str(type(loginAndRegistrationWindowsFunctionality.getCurrentUsername(self))))
 
     class registrationWindowsFunctionality:
         def fillRegistrationWindow(self, rWindow):
             print('Filling registration window')
-            usernameEntry=loginAndRegistrationWindowsFunctionality().usernameEntry(rWindow)
-            passwordEntry=loginAndRegistrationWindowsFunctionality().passwordEntry(rWindow)
+            loginAndRegistrationWindowsFunctionality().usernameEntry(rWindow)
+            loginAndRegistrationWindowsFunctionality().passwordEntry(rWindow)
             registrationButton = Button(rWindow, text='Register', fg='Black', command=lambda: loginAndRegistrationWindowsFunctionality.registrationWindowsFunctionality.register(self, rWindow))
             registrationButton.grid(row=3, column=1, columnspan=2, sticky=S)
         def register(self, rWindow):
