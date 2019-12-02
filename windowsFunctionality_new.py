@@ -25,13 +25,11 @@ class loginAndRegistrationWindowsFunctionality:#A parent class to hold the funct
         for index in range((int)(numLines / 2)):  # Index ranging up to half of the number of lines (as we will be
             # observing both the usernames and passwords and considering them to be one pairing, even though they
             # take up 2 lines)
-            usernamesFromSheet.append(
-                fileData[index * 2].rstrip())  # Append the usernames from the sheet to usernamesFromSheet list.
+            usernamesFromSheet.append(fileData[index * 2].rstrip())  # Append the usernames from the sheet to usernamesFromSheet list.
             # NOTE: This is helpful because now we have two seperate lists containing the usernames and passwords, respectively.
             # This means that we can now compare usernames and passwords at the same index (meaning that they are pertaining
             # to the same user)
-            passwordsFromSheet.append(
-                fileData[(index * 2) + 1].rstrip())  # Append the usernames from the sheet to passwordsFromSheet list
+            passwordsFromSheet.append(fileData[(index * 2) + 1].rstrip())  # Append the usernames from the sheet to passwordsFromSheet list
 
     #Class methods for all login and registry-related functionalities
     def createThread(self,usernameEntry,passwordEntry):
@@ -50,7 +48,8 @@ class loginAndRegistrationWindowsFunctionality:#A parent class to hold the funct
             loginAndRegistrationWindowsFunctionality.username = usernameEntry.get()
             loginAndRegistrationWindowsFunctionality.password = passwordEntry.get()
             time.sleep(0.01)#0.01 second delay between username and password updates
-            print('N: '+str(loginAndRegistrationWindowsFunctionality.n))
+        print('Joining!')
+        loginAndRegistrationWindowsFunctionality.thread.join()
     def usernameAndPasswordEntries(self,root):
         usernameLabel = Label(root, text='Username: ')  # Username text
         usernameLabel.grid(row=1, column=1, sticky=W)  # Username text organization
@@ -85,6 +84,8 @@ class loginAndRegistrationWindowsFunctionality:#A parent class to hold the funct
         def login(self, lWindow):#Method used to check if we will log the user in given the information that they have entered.
             print('Login attempt made')
             print('Username: '+loginAndRegistrationWindowsFunctionality.username+'Password: '+loginAndRegistrationWindowsFunctionality.password)
+            if(loginAndRegistrationWindowsFunctionality.loginWindowsFunctionality.matchingUsernameAndPassword(self,loginAndRegistrationWindowsFunctionality.username,loginAndRegistrationWindowsFunctionality.password)):
+                windows.windowsDCM.DCMWindow(self,lWindow)
 
 
     class registrationWindowsFunctionality:
@@ -93,6 +94,8 @@ class loginAndRegistrationWindowsFunctionality:#A parent class to hold the funct
             loginAndRegistrationWindowsFunctionality.n=0
             #loginAndRegistrationWindowsFunctionality.thread.join()
             loginAndRegistrationWindowsFunctionality.usernameAndPasswordEntries(self,rWindow)
+            backButton = Button(rWindow, text='Go Back', fg='Black', command=lambda: [windows.windowsLogin.loginWindow(self,rWindow)])
+            backButton.grid(row=3, column=1, columnspan=2, sticky=W)
             registrationButton = Button(rWindow, text='Register', fg='Black', command=lambda: loginAndRegistrationWindowsFunctionality.registrationWindowsFunctionality.register(self, rWindow))
             registrationButton.grid(row=3, column=1, columnspan=2, sticky=E)
         def register(self, rWindow):
