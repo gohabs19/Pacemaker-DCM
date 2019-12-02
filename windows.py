@@ -15,21 +15,29 @@ class windowsStart:
 
 class windowsLogin:
     def loginWindow(self, root):
-        root.destroy()#Destroy the starting window and its mainloop
         print('Opening Login Window')
         lWindow=Tk()#Create a window to hold the login
         lWindow.title('Login')#Window name
         loginWindowsFunctionality=windowsFunctionality.loginAndRegistrationWindowsFunctionality().loginWindowsFunctionality()
         loginWindowsFunctionality.fillLoginWindow(lWindow)#Call the fillLoginWindow method from the loginWindowsFunctionality
         #class.
+        root.destroy()  # Destroy the starting window and its mainloop
         lWindow.mainloop()
 
 class windowsRegister:
     def registerWindow(self, root):
-        root.destroy()
         print('Opening Register Window')
         rWindow=Tk()
         rWindow.title('Register')
         registrationWindowsFunctionality = windowsFunctionality.loginAndRegistrationWindowsFunctionality().registrationWindowsFunctionality()
         registrationWindowsFunctionality.fillRegistrationWindow(rWindow)  # Call the fillRegistrationWindow method from the registrationWindowsFunctionality
+        root.destroy()
         rWindow.mainloop()
+
+class windowsDCM:
+    def DCMWindow(self,root):
+        print('Opening DCM Window')
+        DCMWindow=Tk()
+        DCMWindow.title('DCM')
+        root.destroy()
+        DCMWindow.mainloop()
