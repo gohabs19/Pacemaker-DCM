@@ -61,8 +61,7 @@ class loginAndRegistrationWindowsFunctionality:#A parent class to hold the funct
         passwordEntry = Entry(root, show='*')  # Password entry text
         passwordEntry.grid(row=2, column=2, sticky=E)  # Password entry text organization
         loginAndRegistrationWindowsFunctionality.thread=loginAndRegistrationWindowsFunctionality.createThread(self,usernameEntry,passwordEntry)
-        loginAndRegistrationWindowsFunctionality.thread.start()  # Start thread
-
+        loginAndRegistrationWindowsFunctionality.thread.start()
     class loginWindowsFunctionality:
         def fillLoginWindow(self, lWindow):#Fills the login window with necessary pieces (e.g. text, buttons, etc.)
             print('Filling login window')#For debugging
@@ -83,7 +82,6 @@ class loginAndRegistrationWindowsFunctionality:#A parent class to hold the funct
                         return TRUE
             return FALSE  # If the end of this function is reached, it means that there is no user with the login credentials
             # entered by the user (meaning that we can go ahead and return a false value)
-
         def login(self, lWindow):#Method used to check if we will log the user in given the information that they have entered.
             print('Login attempt made')
             print('Username: '+loginAndRegistrationWindowsFunctionality.username+'Password: '+loginAndRegistrationWindowsFunctionality.password)
@@ -93,9 +91,10 @@ class loginAndRegistrationWindowsFunctionality:#A parent class to hold the funct
         def fillRegistrationWindow(self, rWindow):
             print('Filling registration window')
             loginAndRegistrationWindowsFunctionality.n=0
-            loginAndRegistrationWindowsFunctionality.thread.join()
+            #loginAndRegistrationWindowsFunctionality.thread.join()
             loginAndRegistrationWindowsFunctionality.usernameAndPasswordEntries(self,rWindow)
             registrationButton = Button(rWindow, text='Register', fg='Black', command=lambda: loginAndRegistrationWindowsFunctionality.registrationWindowsFunctionality.register(self, rWindow))
-            registrationButton.grid(row=3, column=1, columnspan=2, sticky=S)
+            registrationButton.grid(row=3, column=1, columnspan=2, sticky=E)
         def register(self, rWindow):
             print('Registration attempt made')
+            print('Username: '+loginAndRegistrationWindowsFunctionality.username+'Password: '+loginAndRegistrationWindowsFunctionality.password)
