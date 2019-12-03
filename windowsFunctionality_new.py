@@ -87,7 +87,6 @@ class loginAndRegistrationWindowsFunctionality:#A parent class to hold the funct
             if(loginAndRegistrationWindowsFunctionality.loginWindowsFunctionality.matchingUsernameAndPassword(self,loginAndRegistrationWindowsFunctionality.username,loginAndRegistrationWindowsFunctionality.password)):
                 windows.windowsDCM.DCMWindow(self,lWindow)
 
-
     class registrationWindowsFunctionality:
         def fillRegistrationWindow(self, rWindow):
             print('Filling registration window')
@@ -101,3 +100,160 @@ class loginAndRegistrationWindowsFunctionality:#A parent class to hold the funct
         def register(self, rWindow):
             print('Registration attempt made')
             print('Username: '+loginAndRegistrationWindowsFunctionality.username+'Password: '+loginAndRegistrationWindowsFunctionality.password)
+
+class DCMWindowsFunctionality:
+    #Class Variables
+    ###Data for each of the pacing modes###
+    # NOTE: These must be stored globally so that they may be accessed between windows
+    # NOTE: -1 denotes an area that will not be editable, as it is not associated with said mode.
+    # As a result of this, it will be greyed out and not have the ability to be edited when shown
+    # on the DCM.
+    # Data order:
+    AOOData = [0, 0, 0, 0, -1, -1, -1, 0]
+    VOOData = [0, 0, -1, -1, 0, 0, 0, -1]
+    AAIData = [0, 0, 0, 0, -1, -1, -1, 0]
+    VVIData = [0, 0, -1, -1, 0, 0, 0, -1]
+
+    def fillDCMWindow(self,interface):
+        def parameterInputData(windowName):
+            parameterInputDataInterface = Tk()
+            parameterInputDataInterface.title(windowName)
+            localInputData = []
+            if (windowName == 'AOO'):
+                localInputData = DCMWindowsFunctionality.AOOData
+            elif (windowName == 'VOO'):
+                localInputData = DCMWindowsFunctionality.VOOData
+            elif (windowName == 'AAI'):
+                localInputData = DCMWindowsFunctionality.AAIData
+            elif (windowName == 'VVI'):
+                localInputData = DCMWindowsFunctionality.VVIData
+            ###Input adjustments###
+            # Lower Rate Limit
+            lowerRateLimitInputLabel = Label(parameterInputDataInterface, text='Lower Rate Limit')
+            lowerRateLimitInputLabel.grid(row=4, column=1)
+            lowerRateLimitInput = Entry(parameterInputDataInterface)
+            lowerRateLimitInput.grid(row=5, column=1)
+            if (localInputData[0] == (-1)):
+                lowerRateLimitInput.configure(state='disabled')
+            else:
+                lowerRateLimitInput.insert(END, localInputData[0])
+            # Upper Rate Limit
+            upperRateLimitInputLabel = Label(parameterInputDataInterface, text='Upper Rate Limit')
+            upperRateLimitInputLabel.grid(row=4, column=2)
+            upperRateLimitInput = Entry(parameterInputDataInterface)
+            upperRateLimitInput.grid(row=5, column=2)
+            if (localInputData[1] == (-1)):
+                upperRateLimitInput.configure(state='disabled')
+            else:
+                upperRateLimitInput.insert(END, localInputData[1])
+            # Atrial Amplitude
+            atrialAmplitudeInputLabel = Label(parameterInputDataInterface, text='Atrial Amplitude')
+            atrialAmplitudeInputLabel.grid(row=4, column=3)
+            atrialAmplitudeInput = Entry(parameterInputDataInterface)
+            atrialAmplitudeInput.grid(row=5, column=3)
+            if (localInputData[2] == (-1)):
+                atrialAmplitudeInput.configure(state='disabled')
+            else:
+                atrialAmplitudeInput.insert(END, localInputData[2])
+            # Atrial Pulse Width
+            atrialPulseWidthInputLabel = Label(parameterInputDataInterface, text='Atrial Pulse Width')
+            atrialPulseWidthInputLabel.grid(row=4, column=4)
+            atrialPulseWidthInput = Entry(parameterInputDataInterface)
+            atrialPulseWidthInput.grid(row=5, column=4)
+            if (localInputData[3] == (-1)):
+                atrialPulseWidthInput.configure(state='disabled')
+            else:
+                atrialPulseWidthInput.insert(END, localInputData[3])
+            # Ventricular Amplitude
+            ventricularAmplitudeInputLabel = Label(parameterInputDataInterface, text='Ventricular Amplitude')
+            ventricularAmplitudeInputLabel.grid(row=6, column=1)
+            ventricularAmplitudeInput = Entry(parameterInputDataInterface)
+            ventricularAmplitudeInput.grid(row=7, column=1)
+            if (localInputData[4] == (-1)):
+                ventricularAmplitudeInput.configure(state='disabled')
+            else:
+                ventricularAmplitudeInput.insert(END, localInputData[4])
+            # Ventricular Pulse Width
+            ventricularPulseWidthInputLabel = Label(parameterInputDataInterface, text='Ventricular Pulse Width')
+            ventricularPulseWidthInputLabel.grid(row=6, column=2)
+            ventricularPulseWidthInput = Entry(parameterInputDataInterface)
+            ventricularPulseWidthInput.grid(row=7, column=2)
+            if (localInputData[5] == (-1)):
+                ventricularPulseWidthInput.configure(state='disabled')
+            else:
+                ventricularPulseWidthInput.insert(END, localInputData[5])
+            # VRP
+            VRPInputLabel = Label(parameterInputDataInterface, text='VRP')
+            VRPInputLabel.grid(row=6, column=3)
+            VRPInput = Entry(parameterInputDataInterface)
+            VRPInput.grid(row=7, column=3)
+            if (localInputData[6] == (-1)):
+                VRPInput.configure(state='disabled')
+            else:
+                VRPInput.insert(END, localInputData[6])
+            # ARP
+            ARPInputLabel = Label(parameterInputDataInterface, text='ARP')
+            ARPInputLabel.grid(row=6, column=4)
+            ARPInput = Entry(parameterInputDataInterface)
+            ARPInput.grid(row=7, column=4)
+            if (localInputData[7] == (-1)):
+                ARPInput.configure(state='disabled')
+            else:
+                ARPInput.insert(END, localInputData[7])
+
+            def updateInputModeInfo():
+                newInputModeInfo = [lowerRateLimitInput.get(), upperRateLimitInput.get(), atrialAmplitudeInput.get(),
+                                    atrialPulseWidthInput.get(), ventricularAmplitudeInput.get(),
+                                    ventricularPulseWidthInput.get(), VRPInput.get(), ARPInput.get()]
+                # The information applied to the selected input mode once the update button is pressed
+
+                # Get the global arrays of input info
+                global AOOData
+                global VOOData
+                global AAIData
+                global VVIData
+
+                if (windowName == 'AOO'):
+                    AOOData = newInputModeInfo
+                elif (windowName == 'VOO'):
+                    VOOData = newInputModeInfo
+                elif (windowName == 'AAI'):
+                    AAIData = newInputModeInfo
+                elif (windowName == 'VVI'):
+                    VVIData = newInputModeInfo
+
+        ###Pacing mode interface selection###
+        pacingModesLabel = Label(interface, text='Pacing Mode Selection')
+        pacingModesLabel.grid(row=1, column=1, columnspan=2)
+        def AOOWindow():
+            parameterInputData('AOO')
+        def VOOWindow():
+            parameterInputData('VOO')
+        def AAIWindow():
+            parameterInputData('AAI')
+        def VVIWindow():
+            parameterInputData('VVI')
+        AOOButton = Button(interface, text='AOO', command=AOOWindow)
+        AOOButton.grid(row=2, column=1)
+        VOOButton = Button(interface, text='VOO', command=VOOWindow)
+        VOOButton.grid(row=2, column=2)
+        AAIButton = Button(interface, text='AAI', command=AAIWindow)
+        AAIButton.grid(row=3, column=1)
+        VVIButton = Button(interface, text='VVI', command=VVIWindow)
+        VVIButton.grid(row=3, column=2)
+        ###Communication Status between DCM and Device (board)###
+        DCMCommunicationStatusTitleLabel = Label(interface, text='DCM Comms w/ Device')
+        DCMCommunicationStatusTitleLabel.grid(row=1, column=3)
+        DCMCommunicationStatusLabel = Label(interface, text='OFF')
+        DCMCommunicationStatusLabel.grid(row=2, column=3)
+        ###Identifier for whether new pacemaker is plugged in###
+        def newPacemaker():
+            newPacemakerBool = FALSE  # Will actually be whatever the status of whether there is a new pacemaker or not is
+            if (newPacemakerBool == TRUE):
+                return 'YES'
+            else:
+                return 'NO'
+        newPacemakerTitleLabel = Label(interface, text='Different Pacemaker')
+        newPacemakerTitleLabel.grid(row=1, column=4)
+        newPacemakerLabel = Label(interface, text=newPacemaker())
+        newPacemakerLabel.grid(row=2, column=4)
