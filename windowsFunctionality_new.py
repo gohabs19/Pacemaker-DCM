@@ -103,6 +103,7 @@ class loginAndRegistrationWindowsFunctionality:#A parent class to hold the funct
 
 class DCMWindowsFunctionality:
     #Class Variables
+    currentData = [0,0,0,0,0,0,0,0]
     ###Data for each of the pacing modes###
     # NOTE: These must be stored globally so that they may be accessed between windows
     # NOTE: -1 denotes an area that will not be editable, as it is not associated with said mode.
@@ -201,10 +202,16 @@ class DCMWindowsFunctionality:
         else:
             ARPInput.insert(END, localInputData[7])
 
+        def getCurrentInputs():
+            DCMWindowsFunctionality.currentData=[lowerRateLimitInput.get(),upperRateLimitInput.get(),atrialAmplitudeInput.get(),atrialPulseWidthInput.get(),ventricularAmplitudeInput.get(),ventricularPulseWidthInput.get(),VRPInput.get(),ARPInput.get()]
+
+        thread = threading.Thread(target=getCurrentInputs(),args=())
+        thread.daemon = True  # Make thread a daemon (runs in background)
+        thread.start()
+
         def updateInputModeInfo():
-            newInputModeInfo = [lowerRateLimitInput.get(), upperRateLimitInput.get(), atrialAmplitudeInput.get(),
-                                atrialPulseWidthInput.get(), ventricularAmplitudeInput.get(),
-                                ventricularPulseWidthInput.get(), VRPInput.get(), ARPInput.get()]
+            print('Current data: '+str(DCMWindowsFunctionality.currentData[0])+' '+str(DCMWindowsFunctionality.currentData[1])+' '+str(DCMWindowsFunctionality.currentData[2])+' '+str(DCMWindowsFunctionality.currentData[3])+' '+str(DCMWindowsFunctionality.currentData[4])+' '+str(DCMWindowsFunctionality.currentData[5])+' '+str(DCMWindowsFunctionality.currentData[6])+' '+str(DCMWindowsFunctionality.currentData[7]))
+            newInputModeInfo = DCMWindowsFunctionality.currentData
             # The information applied to the selected input mode once the update button is pressed
 
             # Get the global arrays of input info
@@ -221,6 +228,71 @@ class DCMWindowsFunctionality:
                 AAIData = newInputModeInfo
             elif (windowName == 'VVI'):
                 VVIData = newInputModeInfo
+
+        def importSettings():
+            # Get the global arrays of input info
+            global AOOData
+            global VOOData
+            global AAIData
+            global VVIData
+
+            inputModeSettingsSheet = 'inputModeSettings.txt'
+            with open(inputModeSettingsSheet) as settingsData:
+                settings = settingsData.readlines()
+                # previousData=[]
+                importData = ''
+
+                def parseToInt(data):  # Convert parsed data from individual char values to ints
+                    for i in range(len(data)):
+                        data[i] = int(data[i])
+                    return data
+
+                if (windowName == 'AOO'):
+                    # previousData=AOOData[:]#Stores a copy of the previous AOOData list incase the user wants to revert when prompted
+                    importData = settings[0].split(',')
+                    # importData=parseToInt(importData)
+                    # AOOData = importData[:]
+                elif (windowName == 'VOO'):
+                    # previousData=VOOData[:]
+                    importData = settings[1].split(',')
+                    # importData=parseToInt(importData)
+                    # VOOData=importData[:]
+                elif (windowName == 'AAI'):
+                    # previousData = AAIData[:]
+                    importData = settings[2].split(',')
+                    # importData=parseToInt(importData)
+                    # AAIData=importData[:]
+                elif (windowName == 'VVI'):
+                    # previousData=VVIData[:]
+                    importData = settings[3].split(',')
+                    # importData=parseToInt(importData)
+                    # VVIData=importData[:]
+                # print(AOOData, importData, type(importData[0]), type(1))
+
+                importData = parseToInt(importData)
+
+                lowerRateLimitInput.delete(0, END)
+                lowerRateLimitInput.insert(END, importData[0])
+                upperRateLimitInput.delete(0, END)
+                upperRateLimitInput.insert(END, importData[1])
+                atrialAmplitudeInput.delete(0, END)
+                atrialAmplitudeInput.insert(END, importData[2])
+                atrialPulseWidthInput.delete(0, END)
+                atrialPulseWidthInput.insert(END, importData[3])
+                ventricularAmplitudeInput.delete(0, END)
+                ventricularAmplitudeInput.insert(END, importData[4])
+                ventricularPulseWidthInput.delete(0, END)
+                ventricularPulseWidthInput.insert(END, importData[5])
+                VRPInput.delete(0, END)
+                VRPInput.insert(END, importData[6])
+                ARPInput.delete(0, END)
+                ARPInput.insert(END, importData[7])
+
+        updateButton = Button(parameterInputDataInterface, text='Update Info', fg='Black',command=updateInputModeInfo)  # Also need to add command so that it actually updates this info
+        updateButton.grid(row=8, column=1)
+
+        importButton = Button(parameterInputDataInterface, text='Import Settings', fg='Black', command=importSettings)
+        importButton.grid(row=8, column=2)
 
     def fillDCMWindow(self,interface):
         ###Pacing mode interface selection###
